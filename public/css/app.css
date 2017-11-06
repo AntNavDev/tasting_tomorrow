@@ -1,0 +1,29 @@
+.story_image_format {
+    height: 100px;
+    width: 100px;
+    border-radius: 2%;
+}
+a {
+    text-decoration: none;
+    color: #494949;
+}
+a:hover {
+    text-decoration: none;
+    color: #494949;
+}
+.title {
+    text-decoration: underline;
+    color: #233B49;
+}
+div[name="story_div"] {
+    border: solid #404040 1px;
+    margin: 40px;
+    padding: 5px;
+    background-color: #E5E5E5;
+}
+h1 {
+    text-align: center;
+}
+body {
+    background-color: #D7D7D7
+}
