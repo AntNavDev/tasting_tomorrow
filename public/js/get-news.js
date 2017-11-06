@@ -1,23 +1,74 @@
 // On page load
 jQuery( document ).ready( function() {
-    var news_sources = [
-        'espn',
-        'ars-technica',
-        'cnn',
-        'recode'
-    ];
+    var sources_url = 'https://newsapi.org/v1/sources';
+    var news_sources = [];
 
-    news_sources.forEach( function( news_outlet, index ) {
+    // Get News Sources
+    $.ajax({
+        type: 'GET',
+        success: function( data )
+        {   
+            data.sources.forEach( function( data_source, index ) {
+                $( '#news_source_choices' ).append( '<option value="' + data_source.id + '">' + data_source.name + '</option>' );
+            } );
+        },
+        error: function( error, err_str )
+        {
+            console.log( error );
+            console.log( err_str );
+        },
+        url: sources_url
+    });
+
+    
+
+    $( '#news_source_choices' ).on( 'change', function() {
+        $( '#selected_sources' ).append( '<li>' + $( this ).val() + '</li>' );
+        var my_news_sources = Array.from( document.getElementById( 'selected_sources' ).children );
+        if( typeof my_news_sources != 'undefined' )
+        {
+            news_sources = [];
+            my_news_sources.forEach( function( value, index ) {
+                news_sources.push( value.innerHTML );
+            } );
+        }
+        populateData( news_sources );
+    } );
+
+    $( '#clear_button' ).on( 'click', function() {
+        $( '#all_story_container' ).html( '' );
+        $( '#selected_sources' ).html( '' );
+    } );
+
+} );
+
+// Functions
+function format_content( story )
+{
+    var html = '';
+    html += '<a href="' + story.url + '" target="_blank"><div name="story_div">';
+    html += '<h2>' + story.title + '</h2>';
+    html += '<img class="story_image_format" src="' + story.urlToImage + '">';
+    html += '<p>' + story.description + '</p>';
+    html += '<footer>' + story.publishedAt + '<br>by: ' + story.author + '</footer>';
+
+    html += '</div></a>';
+    return html;
+}
+
+function populateData( arr )
+{
+    // Get information from each News Source
+    arr.forEach( function( news_outlet, index ) {
         $( '#news_source_choices' ).append( '<option value="' + news_outlet + '">' + news_outlet + '</option>' );
         var api_url = 'https://newsapi.org/v1/articles?source=' + news_outlet + '&apiKey=345ae09477f3476596dd1722015ff41a';
         $.ajax({
             type: 'GET',
-            success: function(data){
-                console.log('Success!');
+            success: function( data ) {
                 // Handle API data
                 var articles = data.articles;
                 articles.forEach( function( value, index ) {
-                    $( '#' + news_outlet ).append( format_content( value ) );
+                    $( '#all_story_container' ).append( format_content( value ) );
                 } );
             },
             error: function(error, err_str){
@@ -27,24 +78,4 @@ jQuery( document ).ready( function() {
             url: api_url
         });
     } );
-
-    $( '#news_source_choices' ).on( 'change', function() {
-        console.log( $( this ).val() );
-        $( '#selected_sources' ).append( '<li>' + $( this ).val() + '</li>' );
-    } );
-
-} );
-
-// Functions
-function format_content( story )
-{
-    var html = '';
-    html += '<div name="story_div"><a href="' + story.url + '" target="_blank">';
-    html += '<h2>' + story.title + '</h2>';
-    html += '<img class="story_image_format" src="' + story.urlToImage + '">';
-    html += '<p>' + story.description + '</p>';
-    html += '<footer>' + story.publishedAt + '<br>by: ' + story.author + '</footer>';
-
-    html += '</a></div>';
-    return html;
 }
