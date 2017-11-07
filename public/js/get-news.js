@@ -40,19 +40,35 @@ jQuery( document ).ready( function() {
         $( '#selected_sources' ).html( '' );
     } );
 
+    $( '#all_story_container' ).on( 'click', 'i[name="collapse_me"]', function() {
+        console.log( $( this ).parent().find( 'a[name="story_info"]' ) );
+        $( this ).parent().find( 'a[name="story_info"]' ).toggle( 'collapse' );
+        if( $( '#collapse_button' ).html() == 'hide' )
+        {
+            $( '#collapse_button' ).html( 'show' );
+        }
+        else
+        {
+            $( '#collapse_button' ).html( 'hide' );
+        }
+    } );
+
+    $( '#show_button' ).on( 'click', function() {
+        $( 'div[name="story_div"]' ).removeClass( 'collapse' );
+    } );    
 } );
 
 // Functions
 function format_content( story )
 {
     var html = '';
-    html += '<a href="' + story.url + '" target="_blank"><div name="story_div">';
+    html += '<div><i name="collapse_me" class="fa fa-chevron-circle-right"></i><a name="story_info" href="' + story.url + '" target="_blank"><div name="story_div">';
     html += '<h2>' + story.title + '</h2>';
     html += '<img class="story_image_format" src="' + story.urlToImage + '">';
     html += '<p>' + story.description + '</p>';
     html += '<footer>' + story.publishedAt + '<br>by: ' + story.author + '</footer>';
 
-    html += '</div></a>';
+    html += '</div></a></div>';
     return html;
 }
 
