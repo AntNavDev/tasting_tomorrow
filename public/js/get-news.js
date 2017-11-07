@@ -21,7 +21,6 @@ jQuery( document ).ready( function() {
     });
 
     $( '#news_source_choices' ).on( 'change', function() {
-        console.log( $( '#selected_sources' ).find( 'li[name="' + $( this ).val() + '"]' ).length );
         if( $( '#selected_sources' ).find( 'li[name="' + $( this ).val() + '"]' ).length == 0 )
         {
             $( '#selected_sources' ).append( '<li name="' + $( this ).val() + '">' + $( this ).val() + '</li>' );
@@ -30,6 +29,7 @@ jQuery( document ).ready( function() {
             getNewsSources( news_sources );
             renderNewsSources( news_sources );
         }
+        $( this ).val( 'default' );
     } );
 
     $( '#clear_button' ).on( 'click', function() {
@@ -39,21 +39,9 @@ jQuery( document ).ready( function() {
     } );
 
     $( '#all_story_container' ).on( 'click', 'i[name="collapse_me"]', function() {
-        console.log( $( this ).parent().find( 'a[name="story_info"]' ) );
         $( this ).parent().find( 'a[name="story_info"]' ).toggle( 'collapse' );
-        if( $( '#collapse_button' ).html() == 'hide' )
-        {
-            $( '#collapse_button' ).html( 'show' );
-        }
-        else
-        {
-            $( '#collapse_button' ).html( 'hide' );
-        }
+        $( this ).parent().find( 'span[name="hidden_story_title"]' ).toggle( 'display' );
     } );
-
-    $( '#show_button' ).on( 'click', function() {
-        $( 'div[name="story_div"]' ).removeClass( 'collapse' );
-    } );  
 
     $( '#viewed_selected_sources' ).on( 'click', '.remove_source', function() {
         $( this ).parent().remove();
@@ -64,7 +52,7 @@ jQuery( document ).ready( function() {
     } );
 
     $( '#test' ).on( 'click', function() {
-        console.log( news_sources );
+        console.log( 'news_sources', news_sources );
     } );
 } );
 
@@ -72,7 +60,7 @@ jQuery( document ).ready( function() {
 function formatContent( story )
 {
     var html = '';
-    html += '<div><i name="collapse_me" class="fa fa-chevron-circle-right"></i><a name="story_info" href="' + story.url + '" target="_blank"><div name="story_div">';
+    html += '<div name="story_container"><i name="collapse_me" class="fa fa-chevron-circle-right"><span name="hidden_story_title" style="display: none">' + story.title + '</span></i><a name="story_info" href="' + story.url + '" target="_blank"><div name="story_div">';
     html += '<h2>' + story.title + '</h2>';
     html += '<img class="story_image_format" src="' + story.urlToImage + '">';
     html += '<p>' + story.description + '</p>';

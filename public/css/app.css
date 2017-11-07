@@ -17,8 +17,7 @@ a:hover {
 }
 div[name="story_div"] {
     border: solid #404040 1px;
-    margin: 40px;
-    padding: 5px;
+    
     background-color: #E5E5E5;
 }
 h1 {
@@ -27,13 +26,19 @@ h1 {
 body {
     background-color: #D7D7D7
 }
+div[name="story_container"] {
+    position: relative;
+    margin: 40px;
+    padding-left: 40px;
+}
 i[name="collapse_me"] {
-    margin-left: 45px;
-    height: 40px;
+    margin-left: -45px;
     font-size: 30px;
     position: relative;
-    left: 0;
-    bottom: 0;
+    top: 40px;
+}
+i[name="collapse_me"]:hover {
+    cursor: pointer;
 }
 #selected_sources {
     display: none;
