@@ -20,24 +20,22 @@ jQuery( document ).ready( function() {
         url: sources_url
     });
 
-    
-
     $( '#news_source_choices' ).on( 'change', function() {
-        $( '#selected_sources' ).append( '<li>' + $( this ).val() + '</li>' );
-        var my_news_sources = Array.from( document.getElementById( 'selected_sources' ).children );
-        if( typeof my_news_sources != 'undefined' )
+        console.log( $( '#selected_sources' ).find( 'li[name="' + $( this ).val() + '"]' ).length );
+        if( $( '#selected_sources' ).find( 'li[name="' + $( this ).val() + '"]' ).length == 0 )
         {
+            $( '#selected_sources' ).append( '<li name="' + $( this ).val() + '">' + $( this ).val() + '</li>' );
+            $( '#viewed_selected_sources' ).append( '<li><button name="' + $( this ).val() + '" class="remove_source">&times;</button> ' + $( '#news_source_choices option:selected' ).html() + '</li>' );
             news_sources = [];
-            my_news_sources.forEach( function( value, index ) {
-                news_sources.push( value.innerHTML );
-            } );
+            getNewsSources( news_sources );
+            renderNewsSources( news_sources );
         }
-        populateData( news_sources );
     } );
 
     $( '#clear_button' ).on( 'click', function() {
         $( '#all_story_container' ).html( '' );
         $( '#selected_sources' ).html( '' );
+        $( '#viewed_selected_sources' ).html( '' );
     } );
 
     $( '#all_story_container' ).on( 'click', 'i[name="collapse_me"]', function() {
@@ -55,11 +53,23 @@ jQuery( document ).ready( function() {
 
     $( '#show_button' ).on( 'click', function() {
         $( 'div[name="story_div"]' ).removeClass( 'collapse' );
-    } );    
+    } );  
+
+    $( '#viewed_selected_sources' ).on( 'click', '.remove_source', function() {
+        $( this ).parent().remove();
+        $( 'li[name="' + $( this ).attr( 'name' ) + '"]' ).remove();
+        news_sources = [];
+        getNewsSources( news_sources );
+        renderNewsSources( news_sources );
+    } );
+
+    $( '#test' ).on( 'click', function() {
+        console.log( news_sources );
+    } );
 } );
 
 // Functions
-function format_content( story )
+function formatContent( story )
 {
     var html = '';
     html += '<div><i name="collapse_me" class="fa fa-chevron-circle-right"></i><a name="story_info" href="' + story.url + '" target="_blank"><div name="story_div">';
@@ -72,8 +82,20 @@ function format_content( story )
     return html;
 }
 
-function populateData( arr )
+function getNewsSources( arr )
 {
+    var my_news_sources = Array.from( document.getElementById( 'selected_sources' ).children );
+    if( typeof my_news_sources != 'undefined' )
+    {
+        my_news_sources.forEach( function( value, index ) {
+            arr.push( value.innerHTML );
+        } );
+    }
+}
+
+function renderNewsSources( arr )
+{
+    $( '#all_story_container' ).html( '' );
     // Get information from each News Source
     arr.forEach( function( news_outlet, index ) {
         $( '#news_source_choices' ).append( '<option value="' + news_outlet + '">' + news_outlet + '</option>' );
@@ -84,7 +106,7 @@ function populateData( arr )
                 // Handle API data
                 var articles = data.articles;
                 articles.forEach( function( value, index ) {
-                    $( '#all_story_container' ).append( format_content( value ) );
+                    $( '#all_story_container' ).append( formatContent( value ) );
                 } );
             },
             error: function(error, err_str){

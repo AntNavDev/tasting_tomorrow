@@ -33,9 +33,14 @@
         <title></title>
     </head>
 
-    <body>
-        <div class="container-fluid content">
-            {{{body}}}
+    <body class="container-fluid content">
+        <div class="row">
+            <div class="col-md-2">
+                {{> sidebars/basic-sidebar}}
+            </div>
+            <div class="col-md-10">
+                {{{body}}}
+            </div>
         </div>
     </body>
 

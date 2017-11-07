@@ -35,3 +35,9 @@ i[name="collapse_me"] {
     left: 0;
     bottom: 0;
 }
+#selected_sources {
+    display: none;
+}
+li {
+    list-style-type: none;
+}
